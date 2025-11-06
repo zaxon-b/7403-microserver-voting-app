@@ -1,5 +1,5 @@
 # 使用官方 Python 轻量镜像（兼容 Apple M 芯片）
-FROM python:3.10-slim
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/python:3.10-slim
 
 # 设置容器内的工作目录
 WORKDIR /app
