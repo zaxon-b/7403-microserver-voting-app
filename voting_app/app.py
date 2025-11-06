@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import psycopg2
 from datetime import datetime
 
@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 import os
 
-DB_HOST = os.getenv("DB_HOST", "db")
-DB_NAME = os.getenv("DB_NAME", "votes_db")
-DB_USER = os.getenv("DB_USER", "user")
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
+DB_NAME = os.getenv("DB_NAME", "votes-db")
+DB_USER = os.getenv("DB_USER", "appuser")
 DB_PASS = os.getenv("DB_PASS", "123456")
 
 
@@ -35,10 +35,10 @@ def vote():
         cur.close()
         conn.close()
         app.logger.info(f"{now} - Voted for {option}")
-        return f"<h3>You voted for {option}!</h3><a href='/'>Back</a>"
+        return jsonify({"status": "success", "message": f"You voted for {option}!"}), 200
     except Exception as e:
         app.logger.error(f"Database error: {e}")
-        return f"<h3>Error: {e}</h3>"
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=6110, debug=True)
