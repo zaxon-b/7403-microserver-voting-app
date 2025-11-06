@@ -14,6 +14,11 @@ services:
       - "5432:5432"
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U appuser -d votes-db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # 2 Voting 微服务
   voting:
@@ -22,12 +27,13 @@ services:
     ports:
       - "6110:6110"
     environment:
-      DB_HOST: db         # 👈 告诉 Flask 连接数据库容器“db”
+      DB_HOST: db
       DB_NAME: votes-db
       DB_USER: appuser
       DB_PASS: 123456
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   # 3 Result 微服务
   result:
     build: ./result_app
@@ -40,6 +46,5 @@ services:
       DB_USER: appuser
       DB_PASS: 123456
     depends_on:
-      - db
-    
-
+      db:
+        condition: service_healthy
