@@ -23,6 +23,7 @@ def index():
 def vote():
     option = request.form["option"]
     now = datetime.now()
+    ip = request.remote_addr
 
     try:
         conn = get_connection()
@@ -34,7 +35,7 @@ def vote():
         conn.commit()
         cur.close()
         conn.close()
-        app.logger.info(f"{now} - Voted for {option}")
+        app.logger.info(f"[{now}]{ip} - Voted for {option}")
         return jsonify({"status": "success", "message": f"You voted for {option}!"}), 200
     except Exception as e:
         app.logger.error(f"Database error: {e}")
