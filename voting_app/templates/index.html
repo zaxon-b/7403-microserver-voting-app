@@ -65,7 +65,7 @@
 
           // Keep buttons disabled after successful vote and mark chosen button
           setButtonsDisabled(true);
-          const chosenBtn = option === 'cats' ? catsBtn : dogsBtn;
+          const chosenBtn = option === '0' ? catsBtn : dogsBtn;
           // append a checkmark indicator if not already present
           if (!chosenBtn.querySelector('.voted-check')) {
             const span = document.createElement('span');
