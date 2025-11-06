@@ -15,13 +15,16 @@ DB_PASS = os.getenv("DB_PASS", "123456")
 def get_connection():
     return psycopg2.connect(host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASS)
 
+
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
+
 @app.route("/vote", methods=["POST"])
 def vote():
     option = request.form["option"]
+    real_option = "Cats" if option == "0" else "Dogs"
     now = datetime.now()
     ip = request.remote_addr
 
@@ -29,8 +32,15 @@ def vote():
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
-            "UPDATE vote_table SET vote_number = vote_number + 1, last_vote = %s WHERE name = %s;",
-            (now, option),
+            """
+            INSERT INTO vote_table (name, vote_number, last_vote)
+VALUES (%s, 1, %s)
+ON CONFLICT (name) DO UPDATE
+SET 
+  vote_number = vote_table.vote_number + EXCLUDED.vote_number,
+  last_vote = EXCLUDED.last_vote;
+  """,
+            (real_option, now),
         )
         conn.commit()
         cur.close()
@@ -40,6 +50,7 @@ def vote():
     except Exception as e:
         app.logger.error(f"Database error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=6110, debug=True)

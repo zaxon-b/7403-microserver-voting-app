@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # 从环境变量中读取数据库配置
-DB_HOST = os.getenv("DB_HOST", "db")
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_NAME = os.getenv("DB_NAME", "votes-db")
 DB_USER = os.getenv("DB_USER", "appuser")
 DB_PASS = os.getenv("DB_PASS", "123456")

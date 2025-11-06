@@ -43,7 +43,7 @@
 
       // gather form data
       const formData = new FormData();
-      const option = e.submitter && e.submitter.id === 'catsBtn' ? 'cats' : 'dogs';
+      const option = e.submitter && e.submitter.id === 'catsBtn' ? "0" : "1";
       formData.append('option', option);
 
       // show loading
