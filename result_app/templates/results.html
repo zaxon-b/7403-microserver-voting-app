@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voting Results</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    table { border-collapse: collapse; width: 50%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Voting Results</h1>
+  <p>Total votes: {{ total }}</p>
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Votes</th>
+      <th>Percent</th>
+      <th>Last Vote Time</th>
+    </tr>
+    {% for row in data %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td>{{ row.num }}</td>
+        <td>{{ row.percent }}</td>
+        <td>{{ row.last }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

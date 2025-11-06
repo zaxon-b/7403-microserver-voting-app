@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  # 1 PostgreSQL 数据库服务
+  db:
+    image: postgres:14
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: votes-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 2 Voting 微服务
+  voting:
+    build: ./voting_app
+    container_name: voting
+    ports:
+      - "6110:6110"
+    environment:
+      DB_HOST: db         # 👈 告诉 Flask 连接数据库容器“db”
+      DB_NAME: votes-db
+      DB_USER: appuser
+      DB_PASS: 123456
+    depends_on:
+      - db
+  # 3 Result 微服务
+  result:
+    build: ./result_app
+    container_name: result
+    ports:
+      - "6111:6111"
+    environment:
+      DB_HOST: db
+      DB_NAME: votes-db
+      DB_USER: appuser
+      DB_PASS: 123456
+    depends_on:
+      - db
+    
+
